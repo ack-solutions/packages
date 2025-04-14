@@ -1,0 +1,21 @@
+{
+    "name": "@ackplus/nest-crud",
+    "version": "0.0.1",
+    "type": "commonjs",
+    "main": "./src/index.js",
+    "types": "./src/index.d.ts",
+    "dependencies": {
+        "tslib": "^2.3.0",
+        "@nestjs/common": "^10.4.5",
+        "@nestjs/typeorm": "^10.0.2",
+        "@nestjs/swagger": "^7.4.2",
+        "typeorm": "^0.3.20",
+        "deepmerge": "4.3.1",
+        "class-transformer": "^0.5.1",
+        "class-validator": "^0.14.1",
+        "pluralize": "8.0.0",
+        "lodash": "^4.17.21",
+        "@ackplus/nest-crud-request": "workspace:*",
+        "rxjs": "^7.8.0"
+    }
+}

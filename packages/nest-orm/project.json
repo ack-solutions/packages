@@ -1,0 +1,37 @@
+{
+    "name": "nest-orm",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "packages/nest-orm/src",
+    "projectType": "library",
+    "release": {
+        "version": {
+            "generatorOptions": {
+                "packageRoot": "dist/{projectRoot}",
+                "currentVersionResolver": "git-tag"
+            }
+        }
+    },
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": [
+                "{options.outputPath}"
+            ],
+            "options": {
+                "outputPath": "dist/packages/nest-orm",
+                "tsConfig": "packages/nest-orm/tsconfig.lib.json",
+                "packageJson": "packages/nest-orm/package.json",
+                "main": "packages/nest-orm/src/index.ts",
+                "assets": [
+                    "packages/nest-orm/*.md"
+                ]
+            }
+        },
+        "nx-release-publish": {
+            "options": {
+                "packageRoot": "dist/{projectRoot}"
+            }
+        }
+    }
+}

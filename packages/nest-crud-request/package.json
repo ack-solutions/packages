@@ -1,0 +1,10 @@
+{
+    "name": "@ackplus/nest-crud-request",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./index.js",
+    "types": "./index.d.ts",
+    "dependencies": {
+        "tslib": "^2.3.0"
+    }
+}
