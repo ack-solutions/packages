@@ -9,7 +9,7 @@
     "test": "nx test",
     "lint:all": "nx run-many -t lint",
     "start:all": "nx run-many -t serve --parallel",
-    "build:all": "nx run-many --target=build",
+    "build:all": "nx run-many --target=build --exclude nest",
     "test:all": "nx run-many -t test --parallel"
   },
   "private": true,
@@ -37,6 +37,7 @@
     "@nx/js": "20.7.2",
     "@nx/nest": "20.7.2",
     "@nx/node": "20.7.2",
+    "@nx/vite": "^20.7.2",
     "@nx/web": "20.7.2",
     "@nx/webpack": "20.7.2",
     "@nx/workspace": "20.7.2",
