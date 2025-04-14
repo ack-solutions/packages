@@ -96,7 +96,7 @@ export class FindQueryBuilder<T extends ObjectLiteral> {
             let currentPath = '';
             let currentAlias = 'entity';
 
-            parts.forEach((part: string, index: number) => {
+            parts.forEach((part, index) => {
                 currentPath = currentPath ? `${currentPath}.${part}` : part;
                 const relationAlias = this.getRelationAlias(currentPath);
 
@@ -116,7 +116,7 @@ export class FindQueryBuilder<T extends ObjectLiteral> {
                     }
 
                     if (select) {
-                        select.forEach(([key, value]: any) => {
+                        select.forEach(([key, value]) => {
                             this.queryBuilder.addSelect(`${currentAlias}.${key}`, value);
                         });
                         isSelectAll = false;

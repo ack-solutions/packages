@@ -10,7 +10,10 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -26,16 +29,17 @@
     "allowJs": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": false,
-    "strictNullChecks": false,
-    "noUncheckedIndexedAccess": false,
     "baseUrl": ".",
     "paths": {
-      "@ackplus/nest-crud": ["packages/nest-crud/src/index.ts"],
-      "@ackplus/nest-crud-request": ["packages/nest-crud-request/src/index.ts"],
-      "@ackplus/nest-orm": ["packages/nest-orm/src/index.ts"]
+        "@ackplus/nest-crud": [
+          "packages/nest-crud/src/index.ts"
+        ],
+        "@ackplus/nest-orm": [
+          "packages/nest-orm/src/index.ts"
+        ],
+        "@ackplus/nest-crud-request": [
+          "packages/nest-crud-request/src/index.ts"
+        ]
     }
   },
   "exclude": ["node_modules", "tmp"]
