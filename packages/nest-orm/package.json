@@ -1,9 +1,15 @@
 {
-    "name": "nest-orm",
+    "name": "@ackplus/nest-orm",
     "version": "0.0.1",
     "type": "commonjs",
     "main": "./src/index.js",
     "types": "./src/index.d.ts",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ack-solutions/packages.git"
+    },
+    "homepage": "https://github.com/ack-solutions/packages.git#readme",
     "dependencies": {
         "tslib": "^2.3.0"
     }
