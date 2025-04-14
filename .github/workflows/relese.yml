@@ -3,11 +3,10 @@ name: Release from Tag
 on:
   push:
     tags:
-      - 'v*'  # Match tags like v1.2.3
+      - 'v*'
 
 jobs:
   release:
-    name: Release packages
     runs-on: ubuntu-latest
 
     steps:
@@ -30,17 +29,15 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Update versions in all packages
+      - name: Apply version bump with Changesets
         run: |
           VERSION=${{ steps.version.outputs.version }}
-          echo "Setting version $VERSION for all packages..."
-          for dir in packages/*; do
-            if [ -f "$dir/package.json" ]; then
-              jq --arg v "$VERSION" '.version = $v' "$dir/package.json" > tmp && mv tmp "$dir/package.json"
-              echo "Updated $dir"
-            fi
-          done
-        shell: bash
+          echo "Applying version bump via Changesets: $VERSION"
+          npx changeset version --snapshot "$VERSION"
+
+
+      - name: Preview version bumps
+        run: git diff
 
       - name: Build all packages
         run: yarn build:all
