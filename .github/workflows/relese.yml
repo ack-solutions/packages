@@ -33,7 +33,7 @@ jobs:
         run: |
           VERSION=${{ steps.version.outputs.version }}
           echo "Applying version bump via Changesets: $VERSION"
-          yarn changeset version --snapshot "$VERSION"
+          yarn set-version "$VERSION"
 
 
       - name: Preview version bumps
