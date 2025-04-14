@@ -1,0 +1,49 @@
+name: Release on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Set version in packages
+        run: |
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          echo "Using version: $VERSION"
+          for pkg in packages/*; do
+            if [ -f "$pkg/package.json" ]; then
+              jq --arg v "$VERSION" '.version = $v' "$pkg/package.json" > tmp.$$.json && mv tmp.$$.json "$pkg/package.json"
+            fi
+          done
+
+      - name: Build all packages
+        run: npx nx run-many --target=build --all --exclude nest
+
+      - name: Publish changed packages
+        run: npx changeset publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
