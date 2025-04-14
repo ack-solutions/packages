@@ -1,49 +1,55 @@
-name: Release on Tag
+name: Release from Tag
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*'  # Match tags like v1.2.3
 
 jobs:
   release:
+    name: Release packages
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-      packages: write
-
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
+          node-version: 18
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
-        run: yarn
+      - name: Setup NPM Auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      - name: Get version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-      - name: Set version in packages
+      - name: Update versions in all packages
         run: |
-          VERSION=${{ steps.get_version.outputs.VERSION }}
-          echo "Using version: $VERSION"
-          for pkg in packages/*; do
-            if [ -f "$pkg/package.json" ]; then
-              jq --arg v "$VERSION" '.version = $v' "$pkg/package.json" > tmp.$$.json && mv tmp.$$.json "$pkg/package.json"
+          VERSION=${{ steps.version.outputs.version }}
+          echo "Setting version $VERSION for all packages..."
+          for dir in packages/*; do
+            if [ -f "$dir/package.json" ]; then
+              jq --arg v "$VERSION" '.version = $v' "$dir/package.json" > tmp && mv tmp "$dir/package.json"
+              echo "Updated $dir"
             fi
           done
+        shell: bash
 
       - name: Build all packages
-        run: npx nx run-many --target=build --all --exclude nest
+        run: npx nx run-many --target=build --all
 
-      - name: Publish changed packages
-        run: npx changeset publish
+      - name: Publish all packages
+        run: |
+          for dir in packages/*; do
+            if [ -f "$dir/package.json" ]; then
+              cd $dir
+              npm publish --access public || echo "⚠️ Failed to publish $dir (maybe already published)"
+              cd -
+            fi
+          done
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
