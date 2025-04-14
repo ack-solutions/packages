@@ -1,19 +1,19 @@
 {
-    "name": "@ackplus/nest-crud-request",
-    "version": "0.0.1",
-    "type": "module",
-    "main": "./index.js",
-    "types": "./index.d.ts",
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ack-solutions/packages.git"
-    },
-    "homepage": "https://github.com/ack-solutions/packages.git#readme",
-    "publishConfig": {
-        "access": "public"
-    },
-    "dependencies": {
-        "tslib": "^2.3.0"
-    }
+  "name": "@ackplus/nest-crud-request",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ack-solutions/packages.git"
+  },
+  "homepage": "https://github.com/ack-solutions/packages.git#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
 }
