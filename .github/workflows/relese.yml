@@ -44,7 +44,7 @@ jobs:
 
       - name: Publish all packages
         run: |
-          for dir in packages/*; do
+          for dir in dist/packages/*; do
             if [ -f "$dir/package.json" ]; then
               cd $dir
               npm publish --access public || echo "⚠️ Failed to publish $dir (maybe already published)"
