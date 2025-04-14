@@ -52,6 +52,7 @@
     "nx": "20.7.2",
     "prettier": "^2.6.2",
     "ts-jest": "^29.3.2",
+    "ts-node": "10.9.1",
     "tslib": "^2.3.0",
     "typescript": "~5.7.2",
     "webpack-cli": "^5.1.4"
