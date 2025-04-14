@@ -6,8 +6,15 @@
             "repo": "ack-solutions/packages"
         }
     ],
+    "packages": [
+        "packages/*"
+    ],
     "commit": false,
     "access": "public",
     "baseBranch": "main",
-    "updateInternalDependencies": "patch"
+    "updateInternalDependencies": "patch",
+    "snapshot": {
+        "useCalculatedVersion": true,
+        "prereleaseTemplate": "${tag}"
+    }
 }

@@ -10,6 +10,9 @@
         "url": "https://github.com/ack-solutions/packages.git"
     },
     "homepage": "https://github.com/ack-solutions/packages.git#readme",
+    "publishConfig": {
+        "access": "public"
+    },
     "dependencies": {
         "tslib": "^2.3.0"
     }
