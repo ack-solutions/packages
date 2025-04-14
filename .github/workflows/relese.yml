@@ -33,7 +33,7 @@ jobs:
         run: |
           VERSION=${{ steps.version.outputs.version }}
           echo "Applying version bump via Changesets: $VERSION"
-          npx changeset version --snapshot "$VERSION"
+          yarn changeset version --snapshot "$VERSION"
 
 
       - name: Preview version bumps
