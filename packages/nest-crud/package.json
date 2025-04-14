@@ -21,7 +21,7 @@
         "class-validator": "^0.14.1",
         "pluralize": "8.0.0",
         "lodash": "^4.17.21",
-        "@ackplus/nest-crud-request": "workspace:*",
+        "@ackplus/nest-crud-request": "*",
         "rxjs": "^7.8.0"
     }
 }
