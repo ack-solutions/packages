@@ -186,10 +186,15 @@ export class CrudService<T extends BaseEntity> {
             query.addGroupBy(`"${query.alias}"."${key}"`);
         });
         query.limit(1000);
+
         const response = await query.getRawMany() as Array<{ count: number } & Record<string, any>>;
         const total = sumBy(response, (item) => Number(item.count) || 0);
+
         result.total = total;
-        result.data = response;
+        result.data = response.map(item => ({
+            count: Number(item.count) || 0,
+            ...item,
+        }));
         return result;
     }
 
