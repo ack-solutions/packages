@@ -1,10 +1,13 @@
 export interface QueryBuilderOptions {
+    [key: string]: any;
     select?: string[];
     relations?: string[] | Relation[];
     where?: Record<string, any>;
     order?: Record<string, OrderDirectionEnum>;
     skip?: number;
     take?: number;
+    withDeleted?: boolean;
+    onlyDeleted?: boolean;
 }
 
 export enum WhereLogicalOperatorEnum {

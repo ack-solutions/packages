@@ -111,6 +111,21 @@ export class QueryBuilder {
         return this;
     }
 
+    setWithDeleted(withDeleted: boolean): this {
+        this.options.withDeleted = withDeleted;
+        return this;
+    }
+
+    setOnlyDeleted(onlyDeleted: boolean): this {
+        this.options.onlyDeleted = onlyDeleted;
+        return this;
+    }
+
+    set(key: string, value: any): this {
+        this.options[key] = value;
+        return this;
+    }
+
     toObject() {
         const options = {
             ...this.options,
