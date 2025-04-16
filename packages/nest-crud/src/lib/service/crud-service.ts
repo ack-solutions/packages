@@ -279,6 +279,7 @@ export class CrudService<T extends BaseEntity> {
     }
 
     async delete(criteria: ID | FindOptionsWhere<T>, ...others: any) {
+        console.log('crud service', { criteria, others })
         criteria = this.parseFindOptions(criteria);
 
         const oldData = await this.repository.findOne({ where: criteria });

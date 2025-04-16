@@ -66,7 +66,6 @@ export class SerializeHelper {
 
             @ApiPropertyOptional({
                 isArray: true,
-                type: 'object',
                 example: [
                     { count: 10, status: 'active' },
                     { count: 20, status: 'inactive' },
