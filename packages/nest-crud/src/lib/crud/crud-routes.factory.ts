@@ -250,7 +250,8 @@ export class CrudRoutesFactory {
     protected deleteHandler(name: BaseRouteName) {
         this.targetProto[name] = function deleteOne(id: ID) {
             checkService(this);
-            const softDelete = !!this.options.softDelete;
+            console.log(this.options)
+            const softDelete = !!this.options?.softDelete;
             return this.service.delete(id, softDelete);
         };
     }
@@ -258,7 +259,7 @@ export class CrudRoutesFactory {
     protected deleteManyHandler(name: BaseRouteName) {
         this.targetProto[name] = function deleteMany(dto: any) {
             checkService(this);
-            const softDelete = !!this.options.softDelete;
+            const softDelete = !!this.options?.softDelete;
             return this.service.deleteMany(dto, softDelete);
         };
     }
