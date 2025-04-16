@@ -48,6 +48,9 @@ export class FindQueryBuilder<T extends ObjectLiteral> {
             findOptions.take = Number(this.query.take);
         }
 
+        if (this.query.withDeleted && this.repository.metadata.deleteDateColumn) {
+            findOptions.withDeleted = true;
+        }
         if (this.query.onlyDeleted && this.repository.metadata.deleteDateColumn) {
             findOptions.withDeleted = true;
             findOptions.where = {

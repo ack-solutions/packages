@@ -107,6 +107,7 @@ export interface IFindManyOptions {
     where?: Record<string, any>;
     select?: Record<string, any>;
     onlyDeleted?: boolean;
+    withDeleted?: boolean;
 }
 
 export interface IFindOneOptions {

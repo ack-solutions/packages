@@ -72,7 +72,15 @@ class ManyConditionDto {
     })
     @IsOptional()
     @IsBoolean()
-    isOnlyDeleted?: boolean;
+    onlyDeleted?: boolean;
+
+    @ApiPropertyOptional({
+        description: 'Only deleted records',
+        example: true,
+    })
+    @IsOptional()
+    @IsBoolean()
+    withDeleted?: boolean;
 }
 
 
@@ -94,7 +102,7 @@ export class Validation {
 
                 @ApiPropertyOptional({ description: 'Relations to include in the query' })
                 @IsOptional()
-                relations?: any[] | Record<string, boolean> | string;
+                relations?: string[] | Record<string, boolean>;
 
                 @ApiPropertyOptional({
                     description: 'Order of the results',
@@ -112,9 +120,7 @@ export class Validation {
                 })
                 @IsOptional()
                 @IsObject()
-                order?: {
-                    [key: string]: 'ASC' | 'DESC';
-                };
+                order?: Record<string, 'ASC' | 'DESC'>;
 
                 @ApiPropertyOptional({ description: 'Number of records to skip' })
                 @IsOptional()

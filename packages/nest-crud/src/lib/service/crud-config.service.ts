@@ -17,6 +17,11 @@ export class CrudConfigService {
                 interceptors: [],
                 decorators: [],
             },
+            counts: {
+                enabled: true,
+                interceptors: [],
+                decorators: [],
+            },
             create: {
                 enabled: true,
                 interceptors: [],

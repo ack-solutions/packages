@@ -43,6 +43,10 @@ export class CrudService<T extends BaseEntity> {
         return queryBuilder;
     }
 
+    protected async beforeCounts(queryBuilder: FindQueryBuilder<T>) {
+        return queryBuilder;
+    }
+
     protected async beforeFindOne(options: FindOneOptions<T> = {}) {
         return options;
     }
@@ -145,17 +149,17 @@ export class CrudService<T extends BaseEntity> {
     }
 
     async counts(request: {
-        queryRequest: any,
+        filter: any,
         groupByKey?: string | string[],
     }): Promise<{ total: number, data?: Array<{ count: number } & Record<string, any>> }> {
-        const { queryRequest = {}, groupByKey = null } = request;
+        const { filter = {}, groupByKey = null } = request;
 
         let result: { total: number, data?: Array<{ count: number } & Record<string, any>> } = {
             total: 0,
         }
 
-        let queryBuilder = new FindQueryBuilder(this.repository, queryRequest);
-        queryBuilder = await this.beforeFindMany(queryBuilder);
+        let queryBuilder = new FindQueryBuilder(this.repository, filter);
+        queryBuilder = await this.beforeCounts(queryBuilder);
         const query = queryBuilder.getQueryBuilder();
 
         // No groupByKey: return total count
