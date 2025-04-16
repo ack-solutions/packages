@@ -278,15 +278,13 @@ export class CrudService<T extends BaseEntity> {
         });
     }
 
-    async delete(criteria: ID | FindOptionsWhere<T>, ...others: any) {
-        console.log('crud service', { criteria, others })
+    async delete(criteria: ID | FindOptionsWhere<T>, softDelete = false, ...others: any) {
         criteria = this.parseFindOptions(criteria);
 
         const oldData = await this.repository.findOne({ where: criteria });
         if (!oldData) {
             throw new NotFoundException(`${this.repository.metadata.name} with criteria ${JSON.stringify(criteria)} not found`);
         }
-        const softDelete = !!others?.softDelete;
 
         await this.beforeDelete(oldData);
 
@@ -302,10 +300,9 @@ export class CrudService<T extends BaseEntity> {
         };
     }
 
-    async deleteMany(params: { ids: ID[] }, ...others: any) {
+    async deleteMany(params: { ids: ID[] }, softDelete = false, ...others: any) {
         const ids = await this.beforeDeleteMany(params.ids);
         if (ids?.length > 0) {
-            const softDelete = !!others?.softDelete;
             if (softDelete) {
                 await this.repository.softDelete({ id: In(ids) as any });
             } else {
