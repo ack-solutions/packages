@@ -106,7 +106,7 @@ export class CrudRoutesFactory {
             },
             {
                 name: 'counts',
-                path: '/',
+                path: '/get/counts',
                 method: RequestMethod.GET,
                 enable: true,
                 override: false,
