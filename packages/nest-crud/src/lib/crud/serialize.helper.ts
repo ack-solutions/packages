@@ -1,9 +1,10 @@
 /* eslint-disable max-classes-per-file */
 import { Type } from 'class-transformer';
-import { ValidateNested } from 'class-validator';
+import { IsOptional, ValidateNested } from 'class-validator';
 import { IsArray } from 'class-validator';
 
 import { ApiProperty } from './swagger.helper';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 
 export class SerializeHelper {
@@ -56,6 +57,31 @@ export class SerializeHelper {
         });
 
         return FindOneResponseDto;
+    }
+
+    static createCountResponseDto(resourceName: string): any {
+        class CountResponseDto {
+            @ApiPropertyOptional({ type: 'number', example: 100 })
+            total?: number;
+
+            @ApiPropertyOptional({
+                isArray: true,
+                type: 'object',
+                example: [
+                    { count: 10, status: 'active' },
+                    { count: 20, status: 'inactive' },
+                ],
+            })
+            @IsOptional()
+            data?: Array<{ count: number } & Record<string, any>>;
+        }
+
+        Object.defineProperty(CountResponseDto, 'name', {
+            writable: false,
+            value: `Count${resourceName}ResponseDto`,
+        });
+
+        return CountResponseDto;
     }
 
     static createCreateManyResponseDto(dto: any, resourceName: string): any {

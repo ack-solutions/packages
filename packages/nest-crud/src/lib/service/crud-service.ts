@@ -1,8 +1,7 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { cloneDeep, omit } from 'lodash';
+import { NotFoundException } from '@nestjs/common';
+import { sumBy, uniq } from 'lodash';
 import { FindOneOptions, FindOptionsWhere, In, Repository, SaveOptions } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { BaseEntity } from '../base-entity';
 import { FindQueryBuilder } from './find-query-builder';
@@ -98,7 +97,6 @@ export class CrudService<T extends BaseEntity> {
     }
 
     async create(data: Partial<T>, saveOptions: SaveOptions = {}, ..._others: any[]): Promise<T> {
-        console.log('data', cloneDeep(data));
         data = await this.beforeSave(data);
         data = await this.beforeCreate(data);
         let entity = this.repository.create(data as DeepPartial<T>);
@@ -144,6 +142,51 @@ export class CrudService<T extends BaseEntity> {
             items,
             total,
         };
+    }
+
+    async counts(request: {
+        queryRequest: any,
+        groupByKey?: string | string[],
+    }): Promise<{ total: number, data?: Array<{ count: number } & Record<string, any>> }> {
+        const { queryRequest = {}, groupByKey = null } = request;
+
+        let result: { total: number, data?: Array<{ count: number } & Record<string, any>> } = {
+            total: 0,
+        }
+
+        let queryBuilder = new FindQueryBuilder(this.repository, queryRequest);
+        queryBuilder = await this.beforeFindMany(queryBuilder);
+        const query = queryBuilder.getQueryBuilder();
+
+        // No groupByKey: return total count
+        if (!groupByKey) {
+            query.select(`COUNT("${query.alias}"."id")`, 'count');
+            const response = await query.getRawOne() as { count: number };
+            result.total = Number(response.count) || 0;
+            return result;
+        }
+
+        // Normalize and validate groupByKey
+        const groupKeys = Array.isArray(groupByKey) ? uniq(groupByKey) : [groupByKey];
+        const validColumns = this.repository.metadata.columns.map(col => col.propertyName);
+        const invalidKeys = groupKeys.filter(key => !validColumns.includes(key));
+
+        if (invalidKeys.length) {
+            throw new Error(`Invalid groupByKey: ${invalidKeys.join(', ')}. Valid columns are: ${validColumns.join(', ')}`);
+        }
+
+        // Add COUNT and groupings
+        query.select(`COUNT("${query.alias}"."id")`, 'count');
+        groupKeys.forEach(key => {
+            query.addSelect(`"${query.alias}"."${key}"`, key);
+            query.addGroupBy(`"${query.alias}"."${key}"`);
+        });
+        query.limit(1000);
+        const response = await query.getRawMany() as Array<{ count: number } & Record<string, any>>;
+        const total = sumBy(response, (item) => Number(item.count) || 0);
+        result.total = total;
+        result.data = response;
+        return result;
     }
 
     async findOne(id: ID, options: FindOneOptions<T> = {}, ..._others: any[]): Promise<T> {
