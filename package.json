@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "0.0.13",
   "license": "MIT",
   "scripts": {
     "set-version": "node tools/set-version.js",
