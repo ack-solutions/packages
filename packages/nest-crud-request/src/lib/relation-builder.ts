@@ -24,7 +24,7 @@ export class RelationBuilder {
             } else if (typeof relations === 'string') {
                 this.add(relations);
             } else {
-                this.relations = relations || {};
+                this.relations = relations;
             }
         }
         return this;

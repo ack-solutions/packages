@@ -278,17 +278,22 @@ export class CrudService<T extends BaseEntity> {
         });
     }
 
-    async delete(criteria: ID | FindOptionsWhere<T>, ..._others: any[]) {
+    async delete(criteria: ID | FindOptionsWhere<T>, ...others: any) {
         criteria = this.parseFindOptions(criteria);
 
         const oldData = await this.repository.findOne({ where: criteria });
         if (!oldData) {
             throw new NotFoundException(`${this.repository.metadata.name} with criteria ${JSON.stringify(criteria)} not found`);
         }
+        const softDelete = !!others?.softDelete;
 
         await this.beforeDelete(oldData);
 
-        await this.repository.softDelete(criteria);
+        if (softDelete) {
+            await this.repository.softDelete(criteria);
+        } else {
+            await this.repository.delete(criteria);
+        }
 
         await this.afterDelete(oldData);
         return {
@@ -296,10 +301,15 @@ export class CrudService<T extends BaseEntity> {
         };
     }
 
-    async deleteMany(params: { ids: ID[] }, ..._others: any[]) {
+    async deleteMany(params: { ids: ID[] }, ...others: any) {
         const ids = await this.beforeDeleteMany(params.ids);
         if (ids?.length > 0) {
-            await this.repository.softDelete({ id: In(ids) as any });
+            const softDelete = !!others?.softDelete;
+            if (softDelete) {
+                await this.repository.softDelete({ id: In(ids) as any });
+            } else {
+                await this.repository.delete({ id: In(ids) as any });
+            }
             await this.afterDeleteMany(ids);
             return {
                 message: 'Successfully deleted',
