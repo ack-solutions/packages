@@ -48,6 +48,7 @@ export class CrudRoutesFactory {
     protected get actionsMap(): { [key in BaseRouteName]: CrudActionsEnum } {
         return {
             findMany: CrudActionsEnum.FIND_MANY,
+            counts: CrudActionsEnum.COUNTS,
             findOne: CrudActionsEnum.FIND_ONE,
             createMany: CrudActionsEnum.CREATE_MANY,
             create: CrudActionsEnum.CREATE,
@@ -98,6 +99,13 @@ export class CrudRoutesFactory {
         return [
             {
                 name: 'findMany',
+                path: '/',
+                method: RequestMethod.GET,
+                enable: true,
+                override: false,
+            },
+            {
+                name: 'counts',
                 path: '/',
                 method: RequestMethod.GET,
                 enable: true,
@@ -195,6 +203,12 @@ export class CrudRoutesFactory {
         this.targetProto[name] = function findMany(req: any) {
             checkService(this);
             return this.service.findMany(req);
+        };
+    }
+    protected countsHandler(name: BaseRouteName) {
+        this.targetProto[name] = function counts(req: any) {
+            checkService(this);
+            return this.service.counts(req);
         };
     }
 
@@ -304,6 +318,7 @@ export class CrudRoutesFactory {
 
 
         this.swaggerModels.findMany = SerializeHelper.createFindManyResponseDto(modelType, this.entityName);
+        this.swaggerModels.counts = SerializeHelper.createCountResponseDto(this.entityName);
         this.swaggerModels.findOne = SerializeHelper.createFindOneResponseDto(this.entityName);
         this.swaggerModels.create = modelType;
         this.swaggerModels.createMany = SerializeHelper.createCreateManyResponseDto(modelType, this.entityName);
@@ -367,6 +382,11 @@ export class CrudRoutesFactory {
 
         switch (name) {
             case 'findMany':
+                args = {
+                    ...R.setQueryArg(0),
+                };
+                break;
+            case 'counts':
                 args = {
                     ...R.setQueryArg(0),
                 };
@@ -456,6 +476,11 @@ export class CrudRoutesFactory {
             case 'findMany': {
                 const findManyDto = Validation.createFindManyDto(this.options);
                 R.setRouteArgsTypes([findManyDto], this.targetProto, name);
+                break;
+            }
+            case 'counts': {
+                const countsDto = Validation.createCountsDto(this.options);
+                R.setRouteArgsTypes([countsDto], this.targetProto, name);
                 break;
             }
             case 'findOne': {

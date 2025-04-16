@@ -16,6 +16,7 @@ export class Swagger {
         return {
             findMany: `Retrieve multiple ${pluralize(modelName)}`,
             findOne: `Retrieve a single ${modelName}`,
+            counts: `Retrieve counts of ${pluralize(modelName)}`,
             create: `Create a single ${modelName}`,
             createMany: `Create multiple ${pluralize(modelName)}`,
             update: `Update a single ${modelName}`,

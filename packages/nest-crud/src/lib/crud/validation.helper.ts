@@ -1,7 +1,7 @@
 import { ValidationPipe, ValidationPipeOptions } from '@nestjs/common';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsNumber, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsBoolean, IsNumber, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { isNil } from 'lodash';
 
 import { ApiProperty } from './swagger.helper';
@@ -35,6 +35,48 @@ class RestoreManyDto {
 
 }
 
+class CountsDto {
+
+}
+
+class ManyConditionDto {
+    @ApiPropertyOptional({
+        description: 'Conditions to filter the query',
+        example: {
+            $or: [
+                {
+                    firstName: { $like: '%John%' },
+                    lastName: { $like: '%Doe%' },
+                },
+                {
+                    lastName: { $like: '%Doe%' },
+                    firstName: { $like: '%John%' },
+                },
+            ],
+            // Example without dot notation for flat properties
+            age: {
+                $gt: 18,
+                $lt: 65,
+            },
+            status: { $in: ['active', 'inactive'] },
+            joinedDate: { $between: ['2020-01-01', '2021-01-01'] },
+        },
+    })
+    @IsOptional()
+    @IsObject()
+    where?: any; // Example provided for usage
+
+    @ApiPropertyOptional({
+        description: 'Only deleted records',
+        example: true,
+    })
+    @IsOptional()
+    @IsBoolean()
+    isOnlyDeleted?: boolean;
+}
+
+
+
 export class Validation {
 
     static getValidationPipe(options: ValidationPipeOptions = {}, group?: CrudValidationGroupsEnum): ValidationPipe {
@@ -48,37 +90,11 @@ export class Validation {
         /* istanbul ignore else */
 
         if (!isFalse(options.validation)) {
-            class FindManyImpl {
+            class FindManyImpl extends ManyConditionDto {
 
                 @ApiPropertyOptional({ description: 'Relations to include in the query' })
                 @IsOptional()
                 relations?: any[] | Record<string, boolean> | string;
-
-                @ApiPropertyOptional({
-                    description: 'Conditions to filter the query',
-                    example: {
-                        $or: [
-                            {
-                                firstName: { $like: '%John%' },
-                                lastName: { $like: '%Doe%' },
-                            },
-                            {
-                                lastName: { $like: '%Doe%' },
-                                firstName: { $like: '%John%' },
-                            },
-                        ],
-                        // Example without dot notation for flat properties
-                        age: {
-                            $gt: 18,
-                            $lt: 65,
-                        },
-                        status: { $in: ['active', 'inactive'] },
-                        joinedDate: { $between: ['2020-01-01', '2021-01-01'] },
-                    },
-                })
-                @IsOptional()
-                @IsObject()
-                where?: any; // Example provided for usage
 
                 @ApiPropertyOptional({
                     description: 'Order of the results',
@@ -120,6 +136,36 @@ export class Validation {
         }
 
         return FindManyDto;
+    }
+
+    static createCountsDto(options: Partial<CrudOptions>): any {
+        /* istanbul ignore else */
+        if (!isFalse(options.validation)) {
+            class CountsImpl {
+                @ApiPropertyOptional({
+                    description: 'Filter to apply to the query',
+                    type: ManyConditionDto,
+                })
+                @IsOptional()
+                @ValidateNested()
+                @Type(() => ManyConditionDto)
+                filter?: ManyConditionDto;
+
+                @ApiPropertyOptional({
+                    description: 'Group by key',
+                    example: 'status',
+                })
+                @IsOptional()
+                groupByKey?: string | string[];
+
+            }
+            Object.defineProperty(CountsImpl, 'name', {
+                writable: false,
+                value: `Counts${options.entity.name}Dto`,
+            });
+            return CountsImpl;
+        }
+        return CountsDto;
     }
 
     static createFindOneDto(options: Partial<CrudOptions>): any {

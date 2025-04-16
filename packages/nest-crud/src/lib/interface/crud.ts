@@ -4,6 +4,7 @@ import { NestInterceptor, RequestMethod, ValidationPipeOptions } from '@nestjs/c
 export type BaseRouteName =
     | 'findMany'
     | 'findOne'
+    | 'counts'
     | 'create'
     | 'createMany'
     | 'update'
@@ -36,6 +37,7 @@ export interface RouteOptions {
 
 export interface CrudRoutesOptions {
     findMany?: RouteOptions | false;
+    counts?: RouteOptions | false;
     findOne?: RouteOptions | false;
     create?: RouteOptions | false;
     createMany?: RouteOptions | false;
@@ -82,6 +84,7 @@ export enum CrudValidationGroupsEnum {
 
 export enum CrudActionsEnum {
     FIND_MANY = 'findMany',
+    COUNTS = 'counts',
     FIND_ONE = 'findOne',
     CREATE = 'create',
     CREATE_MANY = 'createMany',
