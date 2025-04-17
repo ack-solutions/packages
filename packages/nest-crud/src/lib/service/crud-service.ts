@@ -15,10 +15,10 @@ export class CrudService<T extends BaseEntity> {
 
     constructor(readonly repository: Repository<T>) { }
 
-    protected async beforeSave(entity: Partial<T>, _request?: any) {
+    protected async beforeSave(entity: Partial<T>, _request?: any): Promise<Partial<T>> {
         return entity;
     }
-    protected async afterSave(newValue: T, _oldValue?: any, _request?: any) {
+    protected async afterSave(newValue: T, _oldValue?: any, _request?: any): Promise<T> {
         return newValue;
     }
 
@@ -39,15 +39,15 @@ export class CrudService<T extends BaseEntity> {
     }
 
 
-    protected async beforeFindMany(queryBuilder: FindQueryBuilder<T>, _orgRequest?: any) {
+    protected async beforeFindMany(queryBuilder: FindQueryBuilder<T>, _orgRequest?: any): Promise<FindQueryBuilder<T>> {
         return queryBuilder;
     }
 
-    protected async beforeCounts(queryBuilder: FindQueryBuilder<T>, _orgRequest?: any) {
+    protected async beforeCounts(queryBuilder: FindQueryBuilder<T>, _orgRequest?: any): Promise<FindQueryBuilder<T>> {
         return queryBuilder;
     }
 
-    protected async beforeFindOne(options: FindOneOptions<T> = {}) {
+    protected async beforeFindOne(options: FindOneOptions<T> = {}, _orgRequest?: any): Promise<FindOneOptions<T>> {
         return options;
     }
 
