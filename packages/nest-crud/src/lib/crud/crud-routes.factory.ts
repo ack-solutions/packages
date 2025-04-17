@@ -192,7 +192,7 @@ export class CrudRoutesFactory {
                 name: 'reorder',
                 path: '/reorder',
                 method: RequestMethod.PUT,
-                enable: true,
+                enable: false,
                 override: false,
             },
         ];

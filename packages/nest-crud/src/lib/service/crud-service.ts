@@ -39,11 +39,11 @@ export class CrudService<T extends BaseEntity> {
     }
 
 
-    protected async beforeFindMany(queryBuilder: FindQueryBuilder<T>) {
+    protected async beforeFindMany(queryBuilder: FindQueryBuilder<T>, _orgRequest?: any) {
         return queryBuilder;
     }
 
-    protected async beforeCounts(queryBuilder: FindQueryBuilder<T>) {
+    protected async beforeCounts(queryBuilder: FindQueryBuilder<T>, _orgRequest?: any) {
         return queryBuilder;
     }
 
@@ -140,7 +140,7 @@ export class CrudService<T extends BaseEntity> {
 
     async findMany(query: any, ..._others: any[]): Promise<PaginationResponse<T>> {
         let queryBuilder = new FindQueryBuilder(this.repository, query);
-        queryBuilder = await this.beforeFindMany(queryBuilder);
+        queryBuilder = await this.beforeFindMany(queryBuilder, query);
         const [items, total] = await queryBuilder.getManyAndCount();
         return {
             items,
@@ -256,7 +256,7 @@ export class CrudService<T extends BaseEntity> {
                 if (!oldData) continue;
 
                 let newData = await this.beforeSave(item);
-                newData = await this.beforeUpdate(newData);
+                newData = await this.beforeUpdate(newData, oldData);
 
                 await manager.save(this.repository.create({
                     ...newData,
@@ -278,7 +278,7 @@ export class CrudService<T extends BaseEntity> {
         });
     }
 
-    async delete(criteria: ID | FindOptionsWhere<T>, softDelete = false, ...others: any) {
+    async delete(criteria: ID | FindOptionsWhere<T>, softDelete = false, ..._others: any) {
         criteria = this.parseFindOptions(criteria);
 
         const oldData = await this.repository.findOne({ where: criteria });
@@ -300,7 +300,7 @@ export class CrudService<T extends BaseEntity> {
         };
     }
 
-    async deleteMany(params: { ids: ID[] }, softDelete = false, ...others: any) {
+    async deleteMany(params: { ids: ID[] }, softDelete = false, ..._others: any) {
         const ids = await this.beforeDeleteMany(params.ids);
         if (ids?.length > 0) {
             if (softDelete) {
